@@ -1,0 +1,25 @@
+[package]
+name = "client"
+version = "0.1.0"
+authors = ["donghun <donghun.lee@qraftec.com>"]
+edition = "2018"
+
+
+[[bin]]
+name = "client"
+path = "src/main.rs"
+
+
+[dependencies]
+warp = "0.2.4"
+futures = { version = "0.3", default-features = false, features = ["alloc"] }
+tokio = { version = "0.2.22", features = ["fs", "stream", "sync", "time", "macros"]}
+dns-lookup= "1.0.3"
+tonic = {version = "0.3.0", features=["tls"]}
+prost = "0.6"
+async-stream = "0.3.0"
+serde_json = "1.0"
+lazy_static = "1.4.0"
+
+[build-dependencies]
+tonic-build = "0.3"
