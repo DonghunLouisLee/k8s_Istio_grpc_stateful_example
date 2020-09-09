@@ -14,6 +14,21 @@ use std::sync::Arc;
 use tokio::sync::{mpsc, RwLock};
 use tonic::{transport::Server, Request, Response, Status};
 use uuid::Uuid;
+
+
+//Cassandra related
+// extern crate cdrs;
+// use cdrs::authenticators::StaticPasswordAuthenticator;
+// use cdrs::cluster::session::{new as new_session, Session};
+// use cdrs::cluster::{ClusterTcpConfig, NodeTcpConfigBuilder, TcpConnectionPool};
+// use cdrs::load_balancing::RoundRobin;
+// use cdrs::query::*;
+// use cdrs::frame::IntoBytes;
+// use cdrs::types::from_cdrs::FromCDRSByName;
+// use cdrs::types::prelude::*;
+
+// type CurrentSession = Session<RoundRobin<TcpConnectionPool<StaticPasswordAuthenticator>>>;
+
 #[derive(Default)]
 pub struct MockManagerService {
     //if jobs.get(job_id) is empty, then go and fetch the data from the db
@@ -76,7 +91,13 @@ impl SimpleConnect for MockManagerService {
                             )),
                         };
                         tx_endpoint_in_request_handler.send(res);
-                    }
+                    }  // let user = "user";
+                    // let password = "password";
+                    // let auth = StaticPasswordAuthenticator::new(&user, &password);
+                    // let node = NodeTcpConfigBuilder::new("localhost:9042", auth).build();
+                    // let cluster_config = ClusterTcpConfig(vec![node]);
+                    // let no_compression: CurrentSession =
+                    //     new_session(&cluster_config, RoundRobin::new()).expect("session should be created");
                 }
             }
         });
@@ -96,6 +117,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //database should be something just <job_id, orderupdate for now>
     //later do think about including initial jobregisterequest
 
+    // let user = "user";
+    // let password = "password";
+    // let auth = StaticPasswordAuthenticator::new(&user, &password);
+    // let node = NodeTcpConfigBuilder::new("localhost:9042", auth).build();
+    // let cluster_config = ClusterTcpConfig(vec![node]);
+    // let no_compression: CurrentSession =
+    //     new_session(&cluster_config, RoundRobin::new()).expect("session should be created");
     let my_uuid = Uuid::new_v4();
     println!("i'm a manager, and this is my id: {}", my_uuid);
     let addr = "0.0.0.0:50051".parse()?;

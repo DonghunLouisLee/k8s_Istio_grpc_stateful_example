@@ -1,9 +1,7 @@
 mod poc;
 use job_scheduler::{Job, JobScheduler};
-use poc::{
-    simple_connect_client::SimpleConnectClient, simple_request, JobRegisterRequest,
-    OrderUpdateRequest, SimpleRequest,
-};
+use poc::{simple_connect_client::SimpleConnectClient, JobRegisterRequest, OrderUpdateRequest};
+use poc::{simple_request, SimpleRequest};
 use std::env;
 use tonic::transport::Channel;
 use uuid::Uuid;
@@ -20,7 +18,7 @@ async fn main() {
             let mut client = SimpleConnectClient::new(channel);
             let job_register_request = JobRegisterRequest { register: true };
             let firstConnectionRequest = SimpleRequest {
-                job_id: my_uuid.to_string(),
+                user_id: my_uuid.to_string(),
                 request: Some(simple_request::Request::JobRegisterRequest(
                     job_register_request,
                 )),
@@ -73,7 +71,7 @@ fn send_update(client: SimpleConnectClient<Channel>, my_uuid: Uuid) {
         println!("I get executed every 1 seconds!");
         let order_update_request = OrderUpdateRequest { value: 2 };
         let request = SimpleRequest {
-            job_id: my_uuid.to_string(),
+            user_id: my_uuid.to_string(),
             request: Some(simple_request::Request::OrderUpdateRequest(
                 order_update_request,
             )),
