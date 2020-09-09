@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+
+package poc;
+
+message JobRegisterRequest{
+    bool register =1; 
+}
+
+message JobRegisterResponse{
+    bool status = 1;
+}
+
+message OrderUpdateRequest{
+    string job_id = 2;
+    int32 value = 1; 
+}
+
+message OrderUpdateResponse{
+    int32 sum =1;
+}
+
+message SimpleRequest{
+  string user_id = 1;
+  oneof request{
+    JobRegisterRequest job_register_request = 2;
+    OrderUpdateRequest order_update_request = 3;
+  }
+}
+
+message SimpleResponse{
+  string job_id = 1;
+  string manager_id = 4; 
+  oneof response{
+    JobRegisterResponse job_register_response = 2;
+    OrderUpdateResponse order_update_response = 3;
+  }
+}
+
+
+service SimpleConnect{
+    rpc SimpleConnect(stream SimpleRequest) returns (stream SimpleResponse) {}
+}

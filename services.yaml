@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: poc
+  name: poc-client-service
+  labels:
+    run: poc-client
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 50050
+    targetPort: 50050
+    protocol: TCP
+  selector:
+    run: poc-client
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: poc
+  name: poc-server-service
+  labels:
+    run: poc-server
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 50051
+    targetPort: 50051
+    protocol: TCP
+  selector:
+    run: poc-server
+
+# for now, just use service but change this to statefulset for production
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cassandra
+  name: cassandra
+spec:
+  clusterIP: None
+  ports:
+  - port: 9042
+  selector:
+    app: cassandra

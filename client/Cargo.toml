@@ -20,6 +20,9 @@ prost = "0.6"
 async-stream = "0.3.0"
 serde_json = "1.0"
 lazy_static = "1.4.0"
+uuid = { version = "0.8", features = ["serde", "v4"] }
+rand = "0.7.3"
+job_scheduler = "1.2.1"
 
 [build-dependencies]
 tonic-build = "0.3"

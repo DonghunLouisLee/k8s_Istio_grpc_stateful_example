@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poc-client
+  namespace: axe
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      run: poc-client
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        run: poc-client
+    spec:
+      containers:
+        - name: poc-client
+          image: poc-client:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 50050
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poc-server
+  namespace: axe
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      run: poc-server
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        run: poc-server
+    spec:
+        - name: poc-server
+          image: poc-server:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 50051
+
+---
