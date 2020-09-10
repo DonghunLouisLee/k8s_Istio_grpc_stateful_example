@@ -28,13 +28,14 @@ make docker-build-client
 
 kubectl apply -f namespace.yaml
 
-3. Then deploy the images
+3. Then create a service 
+
+kubectl apply -f services.yaml 
+
+4. Then deploy the images
 
 kubectl apply -f deployments.yaml 
 
-4. Then create a service 
-
-kubectl apply -f services.yaml 
 
 5. Then check if everything's running by looking at logs for each server pods 
 
@@ -44,5 +45,4 @@ kubectl logs -l name=poc-server
 
 
 ## Clean up POC 
-
 

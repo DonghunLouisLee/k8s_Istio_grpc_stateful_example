@@ -31,17 +31,18 @@ spec:
   selector:
     run: poc-server
 
+
 # for now, just use service but change this to statefulset for production
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: cassandra
-  name: cassandra
-spec:
-  clusterIP: None
-  ports:
-  - port: 9042
-  selector:
-    app: cassandra
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   labels:
+#     app: cassandra
+#   name: cassandra
+# spec:
+#   clusterIP: None
+#   ports:
+#   - port: 9042
+#   selector:
+#     app: cassandra

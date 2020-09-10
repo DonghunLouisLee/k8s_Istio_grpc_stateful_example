@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poc-client
+  namespace: poc
+spec:
+  replicas: 20
+  selector:
+    matchLabels:
+      run: poc-client
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        run: poc-client
+    spec:
+      containers:
+        - name: poc-client
+          image: poc-client:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 50050
+
+---

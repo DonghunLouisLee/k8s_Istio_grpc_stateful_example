@@ -19,15 +19,16 @@ pub type UserData = Arc<RwLock<HashMap<String, Vec<String>>>>;
 #[tokio::main]
 async fn main() {
     // 1. create X number of users(default is 1)
-    let number_of_users = env::var("user_number").unwrap_or(String::from("2"));
+    let number_of_users = env::var("user_number").unwrap_or(String::from("1"));
     let number_of_users = number_of_users.parse::<u32>().unwrap_or(1);
 
     println!("This is number of fake users: {:?}", number_of_users);
 
     // 1-1 accept the the server port
-
-    let server_endpoint = env::var("server_port").unwrap_or("tcp://0.0.0.0:50051".into());
-
+    println!("{:?}", env::args());
+    let server_endpoint =
+        env::var("POC_SERVER_SERVICE_PORT").unwrap_or("tcp://0.0.0.0:50051".into());
+    println!("this is the server endpoint: {}", server_endpoint);
     // 2. create a task for X number of users each doing own thing
 
     for n in 1..number_of_users + 1 {
