@@ -4,7 +4,7 @@ metadata:
   name: poc-client
   namespace: poc
 spec:
-  replicas: 20
+  replicas: 3
   selector:
     matchLabels:
       run: poc-client

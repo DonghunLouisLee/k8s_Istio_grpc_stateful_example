@@ -4,7 +4,7 @@ metadata:
   name: poc-server
   namespace: poc
 spec:
-  replicas: 3
+  replicas: 4
   selector:
     matchLabels:
       run: poc-server

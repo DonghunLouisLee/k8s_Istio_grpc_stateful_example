@@ -7,10 +7,12 @@ use std::collections::HashMap;
 use std::env;
 use std::sync::Arc;
 use std::{thread, time};
-use tokio::sync::{mpsc, Mutex, RwLock};
+use tokio::sync::{mpsc, RwLock};
 use tonic::{transport::Channel, Request};
 use uuid::Uuid;
-pub type UserData = Arc<RwLock<HashMap<String, Vec<String>>>>;
+//pub type UserData = Arc<RwLock<HashMap<String, Vec<String>>>>;
+pub type RClient = Arc<RwLock<SimpleConnectClient<Channel>>>;
+
 // pub type JobIDs = Arc<RwLock<String>>;
 /*
     Can be reused as a mock client in the future
@@ -30,27 +32,82 @@ async fn main() {
         env::var("POC_SERVER_SERVICE_PORT").unwrap_or("tcp://0.0.0.0:50051".into());
     println!("this is the server endpoint: {}", server_endpoint);
     // 2. create a task for X number of users each doing own thing
+    let client = Arc::new(RwLock::new(
+        SimpleConnectClient::connect(server_endpoint).await.unwrap(),
+    ));
+    let client2 = client.clone();
 
-    for n in 1..number_of_users + 1 {
-        println!("------------------- user number: {:?}", n);
-        handle(server_endpoint.clone()).await;
-    }
+    let client3 = client.clone();
 
-    loop {
-        println!("hi");
+    let client4 = client.clone();
+    let client5 = client.clone();
+
+    //더럽습니다. 죄송합니다. cannot use values that have been moved 싫습니다.
+    tokio::spawn(async move {
+        tokio::task::spawn(async move {
+            println!("user1");
+            handle(client2).await;
+        });
         thread::sleep(time::Duration::from_secs(1));
-    }
+        tokio::task::spawn(async move {
+            println!("user2");
+
+            handle(client3).await;
+        });
+        thread::sleep(time::Duration::from_secs(1));
+        tokio::task::spawn(async move {
+            println!("user3");
+
+            handle(client4).await;
+        });
+        thread::sleep(time::Duration::from_secs(1));
+
+        tokio::task::spawn(async move {
+            println!("user4");
+
+            handle(client5).await;
+        });
+        thread::sleep(time::Duration::from_secs(1));
+
+        tokio::task::spawn(async move {
+            println!("user5");
+            handle(client.clone()).await;
+        })
+        .await;
+    })
+    .await;
+
+    // tokio::task::spawn(async move {
+    //     println!("hi1");
+    //     handle(client.clone()).await;
+    // })
+    // .await;
+
+    // tokio::task::spawn(async move {
+    //     println!("hi2");
+
+    //     handle(client2).await;
+    // })
+    // .await;
+
+    // tokio::task::spawn(async move {
+    //     handle(client2).await;
+    // });
+
+    // for n in 1..number_of_users + 1 {
+    //     println!("------------------- user number: {:?}", n);
+    //     tokio::task::spawn(async move {
+    //         handle(&client).await;
+    //     });
+    // }
 }
 
-async fn handle(server_endpoint: String) {
+async fn handle(client: RClient) {
     // we need each task to remain 'active'
-    println!("creating new user");
 
     let (message_sender, message_receiver) = mpsc::unbounded_channel();
     let user_id = Uuid::new_v4().to_string();
     println!("This is a new user id: {:?}", user_id);
-    let mut client = SimpleConnectClient::connect(server_endpoint).await.unwrap();
-    let (tx, mut rx) = mpsc::unbounded_channel();
     let mut job_id = String::from("hi");
     //let mut job_id = Arc::new(RwLock::new(String::from("default")));
     let job_register_request = JobRegisterRequest { register: true };
@@ -60,10 +117,13 @@ async fn handle(server_endpoint: String) {
             job_register_request,
         )),
     };
-    println!("sending a order update message");
     message_sender.send(first_request);
 
-    let response = client.simple_connect(Request::new(message_receiver)).await;
+    let response = client
+        .write()
+        .await
+        .simple_connect(Request::new(message_receiver))
+        .await;
 
     match response {
         Ok(response) => {
@@ -90,7 +150,6 @@ async fn handle(server_endpoint: String) {
                     }
                 }
             }
-            println!("escapedddd");
         }
         Err(err) => println!("print the status:{:?}", err.code()),
     }
@@ -101,7 +160,6 @@ async fn handle(server_endpoint: String) {
         //loop everything below
         loop {
             //message sending part
-            println!("sending updates every second");
             thread::sleep(time::Duration::from_secs(1));
             let order_update_request = OrderUpdateRequest {
                 job_id: job_id.clone(),
@@ -118,9 +176,9 @@ async fn handle(server_endpoint: String) {
         }
     });
 
-    println!("reached here");
-
     let response = client
+        .write()
+        .await
         .simple_connect(Request::new(new_message_receiver))
         .await;
 
@@ -136,7 +194,6 @@ async fn handle(server_endpoint: String) {
                                 "Job has been registerd: {:?} by the manager: {:?}",
                                 res.job_id, res.manager_id
                             );
-                            tx.send(res.job_id);
                         }
                     }
                     OrderUpdateResponse(order_update_response) => {
