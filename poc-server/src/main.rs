@@ -15,7 +15,6 @@ use tokio::sync::{mpsc, RwLock};
 use tonic::{transport::Server, Request, Response, Status};
 use uuid::Uuid;
 
-
 //Cassandra related
 // extern crate cdrs;
 // use cdrs::authenticators::StaticPasswordAuthenticator;
@@ -54,14 +53,14 @@ impl SimpleConnect for MockManagerService {
             while let Some(req) = stream.next().await {
                 let unwrapped = req.unwrap();
                 println!("request coming from client_id : {:?}", unwrapped.user_id);
-        
+
                 match unwrapped.request.unwrap() {
                     JobRegisterRequest(job_register_request) => {
                         let job_id = Uuid::new_v4();
                         println!("this is the new job id: {}", job_id);
                         let job_id = job_id.to_string();
                         jobs.write().await.insert(job_id.clone(), Vec::new());
-                        let manager_id = manager_id.read().await; 
+                        let manager_id = manager_id.read().await;
                         let res = SimpleResponse {
                             job_id,
                             manager_id: manager_id.to_string(),
@@ -73,6 +72,11 @@ impl SimpleConnect for MockManagerService {
                     }
                     OrderUpdateRequest(order_update_request) => {
                         let job_id = order_update_request.job_id.clone();
+                        println!(
+                            "job id: {:?}, value:{:?}",
+                            job_id, order_update_request.value
+                        );
+
                         jobs.write()
                             .await
                             .entry(job_id.clone())
@@ -80,24 +84,36 @@ impl SimpleConnect for MockManagerService {
                             .push(order_update_request.clone());
                         //add all the values from the update
                         let mut sum = 0;
-                        let temp = jobs.read().await.get(&job_id).unwrap()
-                        .iter().map(|order| sum += order.value);
-                        let manager_id = manager_id.read().await; 
+                        let temp = jobs
+                            .read()
+                            .await
+                            .get(&job_id)
+                            .unwrap()
+                            .iter()
+                            .for_each(|order| sum += order.value);
+                        let manager_id = manager_id.read().await;
+                        let number_of_updates = jobs.read().await.get(&job_id).unwrap().len();
+                        println!(
+                            "job id: {:?}, number of updates:{:?}",
+                            job_id, number_of_updates
+                        );
+
+                        println!("job id: {:?}, sum:{:?}", job_id, sum);
                         let res = SimpleResponse {
                             job_id,
-                            manager_id: manager_id.to_string(), 
+                            manager_id: manager_id.to_string(),
                             response: Some(simple_response::Response::OrderUpdateResponse(
                                 OrderUpdateResponse { sum },
                             )),
                         };
                         tx_endpoint_in_request_handler.send(res);
-                    }  // let user = "user";
-                    // let password = "password";
-                    // let auth = StaticPasswordAuthenticator::new(&user, &password);
-                    // let node = NodeTcpConfigBuilder::new("localhost:9042", auth).build();
-                    // let cluster_config = ClusterTcpConfig(vec![node]);
-                    // let no_compression: CurrentSession =
-                    //     new_session(&cluster_config, RoundRobin::new()).expect("session should be created");
+                    } // let user = "user";
+                      // let password = "password";
+                      // let auth = StaticPasswordAuthenticator::new(&user, &password);
+                      // let node = NodeTcpConfigBuilder::new("localhost:9042", auth).build();
+                      // let cluster_config = ClusterTcpConfig(vec![node]);
+                      // let no_compression: CurrentSession =
+                      //     new_session(&cluster_config, RoundRobin::new()).expect("session should be created");
                 }
             }
         });

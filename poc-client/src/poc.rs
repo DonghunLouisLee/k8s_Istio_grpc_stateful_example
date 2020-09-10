@@ -10,6 +10,8 @@ pub struct JobRegisterResponse {
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct OrderUpdateRequest {
+    #[prost(string, tag = "2")]
+    pub job_id: std::string::String,
     #[prost(int32, tag = "1")]
     pub value: i32,
 }
@@ -47,9 +49,9 @@ pub mod simple_response {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Response {
         #[prost(message, tag = "2")]
-        RegisterResponse(super::JobRegisterResponse),
+        JobRegisterResponse(super::JobRegisterResponse),
         #[prost(message, tag = "3")]
-        UpdateResponse(super::OrderUpdateResponse),
+        OrderUpdateResponse(super::OrderUpdateResponse),
     }
 }
 #[doc = r" Generated client implementations."]

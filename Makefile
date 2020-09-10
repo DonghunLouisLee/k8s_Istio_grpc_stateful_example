@@ -1,6 +1,6 @@
 	
 docker-build-server:
-	cd server && docker build -t poc-server .
+	cd poc-server && docker build -t poc-server .
 
 docker-build-client:
-	cd client && docker build -t poc-client .
+	cd poc-client && docker build -t poc-client .
