@@ -917,6 +917,25 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
 
 [[package]]
+name = "poc-server"
+version = "0.1.0"
+dependencies = [
+ "async-stream 0.3.0",
+ "cdrs",
+ "dns-lookup",
+ "futures",
+ "job_scheduler",
+ "lazy_static",
+ "prost",
+ "serde_json",
+ "tokio",
+ "tonic",
+ "tonic-build",
+ "uuid",
+ "warp",
+]
+
+[[package]]
 name = "ppv-lite86"
 version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1320,25 +1339,6 @@ dependencies = [
  "itoa",
  "serde",
  "url",
-]
-
-[[package]]
-name = "server"
-version = "0.1.0"
-dependencies = [
- "async-stream 0.3.0",
- "cdrs",
- "dns-lookup",
- "futures",
- "job_scheduler",
- "lazy_static",
- "prost",
- "serde_json",
- "tokio",
- "tonic",
- "tonic-build",
- "uuid",
- "warp",
 ]
 
 [[package]]

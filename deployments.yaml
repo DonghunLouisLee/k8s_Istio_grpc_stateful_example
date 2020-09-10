@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: poc-client
-  namespace: axe
+  namespace: poc
 spec:
   replicas: 10
   selector:
@@ -26,7 +26,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: poc-server
-  namespace: axe
+  namespace: poc
 spec:
   replicas: 10
   selector:
@@ -38,6 +38,7 @@ spec:
       labels:
         run: poc-server
     spec:
+      containers:
         - name: poc-server
           image: poc-server:latest
           imagePullPolicy: Never

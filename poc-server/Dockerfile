@@ -6,7 +6,7 @@ RUN apt-get update && apt-get -y install ca-certificates cmake musl-tools libssl
 COPY . app
 WORKDIR app
 #RUN rustup nightly
-
+RUN rustup toolchain remove nightly && rustup toolchain install nightly
 RUN rustup component add rustfmt
 RUN rustup target add x86_64-unknown-linux-musl
 # Sets the environment variable for the cargo build command that fsollows.

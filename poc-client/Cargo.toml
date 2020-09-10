@@ -1,12 +1,12 @@
 [package]
-name = "client"
+name = "poc-client"
 version = "0.1.0"
 authors = ["donghun <donghun.lee@qraftec.com>"]
 edition = "2018"
 
 
 [[bin]]
-name = "client"
+name = "poc-client"
 path = "src/main.rs"
 
 
