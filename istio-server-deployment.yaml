@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: poc
+  name: poc-server-service
+  labels:
+    run: poc-server
+spec:
+  ports:
+  - port: 50051
+    name: grpc
+  selector:
+    run: poc-server
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poc-server
+  namespace: poc
+  labels:
+    run: poc-server
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      run: poc-server
+  # minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        run: poc-server
+    spec:
+     containers:
+        - name: poc-server
+          image: poc-server:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 50051
+              name: grpc
+
+---

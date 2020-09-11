@@ -50,3 +50,51 @@ kubectl logs -l name=poc-server
 ```
 
 ## Steps to test k8s+ grpc + Istio
+
+
+1. Install istio on local minikube
+https://istio.io/latest/docs/setup/getting-started/
+
+2. Configure Istio services
+
+
+
+
+## Useful libraries + Miscellaneous ideas
+
+Istio
+
+https://bcho.tistory.com/1293?category=731548
+https://bcho.tistory.com/1295?category=731548
+
+https://www.youtube.com/watch?v=1iyFq2VaL5Y
+
+https://crates.io/crates/avro-rs
+
+https://kubernetes.io/docs/concepts/services-networking/service/
+
+Istio mesh microservices GUI tool
+1. https://kiali.io/
+2. https://github.com/kiali/kiali
+
+
+Instead of making LB do the work, we could use grpc connetion pool from the client side(make rust library in the future)
+1. [Grpc connection pool](https://github.com/processout/grpc-go-pool/blob/master/pool.go)
+
+Database connection pool
+1. https://github.com/sfackler/r2d2
+
+Istio example
+1. https://github.com/GoogleCloudPlatform/istio-samples/tree/master/sample-apps/grpc-greeter-go/manifests
+
+
+https://www.cncf.io/projects/
+
+Maybe for endpoint db
+
+https://github.com/tikv/tikv
+
+
+## Things to check for stability(FCAPS)
+
+1. Fault management
