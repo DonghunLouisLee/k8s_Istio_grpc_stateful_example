@@ -51,14 +51,50 @@ kubectl logs -l name=poc-server
 
 ## Steps to test k8s+ grpc + Istio
 
+0. Restart the minikube with enough cpus and memories. 
+I used cpus==4 and memory=16384. This is needed because istio do take up good amount of computing power
 
-1. Install istio on local minikube
-https://istio.io/latest/docs/setup/getting-started/
+1. Install istio on local minikube[Look below for some details]
 
-2. Configure Istio services
+https://istio.io/v1.4/docs/setup/getting-started/
 
+Latest version might not work. I haven't tested it since there are some syntax changes and stuff 
 
+2. Then create a namespace for poc
+```
+kubectl apply -f namespace.yaml
+```
 
+3. Then allow istio injection
+```
+kubectl label namespace poc istio-injection=enabled 
+```
+Then check if it worked by 
+```
+kubectl label namespace poc istio-injection=enabled 
+```
+poc should have label: istio-injection=enabled
+
+4. Then deploy the server
+```
+kubectl apply -f istio-server-deployment.yaml 
+```
+5. Then deploy the client
+```
+kubectl apply -f client-deployment.yaml 
+```
+8. Then check the status
+```
+minikube dashboard
+```
+
+9. All the pods should have two containers(one for the actual app and the other for envoy proxy)
+
+10. [Optional] For more configuration, you are free to run following files
+
+istio-ilbgateway.yaml, istio-virtualservice.yaml 
+
+These won't do anything for now though 
 
 ## Useful libraries + Miscellaneous ideas
 
@@ -90,11 +126,32 @@ Istio example
 
 https://www.cncf.io/projects/
 
-Maybe for endpoint db
-
 https://github.com/tikv/tikv
 
 
 ## Things to check for stability(FCAPS)
 
 1. Fault management
+
+## Things to remember for production
+
+
+1. check k8s and istio version compatibility
+2. install istio on aks
+
+
+###  all the versioning issues(set versions for all stacks)
+
+1. es
+2. rust nightly 
+3. rust
+4. k8s - don't use 1.19 version. stay with 1.16.1 as it's the minimum for istio
+5. fluentd
+6. istio
+
+
+### Istio setup useful commands
+
+1. For istioctl
+
+export PATH=$PWD/bin:$PATH

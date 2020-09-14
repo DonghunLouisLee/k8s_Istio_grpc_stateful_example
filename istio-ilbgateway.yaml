@@ -1,36 +1,15 @@
-apiVersion: v1
-kind: Service
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
 metadata:
-  name: istio-ilbgateway
-  namespace: istio-system
-  annotations:
-    cloud.google.com/load-balancer-type: "internal"
-  labels:
-    chart: gateways
-    heritage: Tiller
-    release: istio
-    app: istio-ilbgateway
-    istio: ilbgateway
+  name: poc-server
+  namespace: poc
 spec:
-  type: LoadBalancer
   selector:
-    app: istio-ilbgateway
-    istio: ilbgateway
-  ports:
-    -
-      name: grpc-pilot-mtls
-      port: 15011
-    -
-      name: grpc-pilot
-      port: 15010
-    -
-      name: tcp-citadel-grpc-tls
-      port: 8060
-      targetPort: 8060
-    -
-      name: tcp-dns
-      port: 5353
-    -
-      name: grpc
-      port: 50051
-
+    run: poc-server
+  servers:
+  - hosts:
+    - '*'
+    port:
+      name: tcp
+      number: 50051
+      protocol: TCP

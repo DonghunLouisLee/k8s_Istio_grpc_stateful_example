@@ -21,15 +21,14 @@ pub type RClient = Arc<RwLock<SimpleConnectClient<Channel>>>;
 #[tokio::main]
 async fn main() {
     // 1. create X number of users(default is 1)
-    let number_of_users = env::var("user_number").unwrap_or(String::from("1"));
+    let number_of_users = env::var("user_number").unwrap_or(String::from("5"));
     let number_of_users = number_of_users.parse::<u32>().unwrap_or(1);
 
     println!("This is number of fake users: {:?}", number_of_users);
 
     // 1-1 accept the the server port
-    println!("{:?}", env::args());
-    let server_endpoint =
-        env::var("POC_SERVER_SERVICE_PORT").unwrap_or("tcp://0.0.0.0:50051".into());
+    env::vars().for_each(|temp| println!("{}, {}", temp.0, temp.1));
+    let server_endpoint = env::var("POC_SERVER_PORT").unwrap_or("tcp://0.0.0.0:50051".into());
     println!("this is the server endpoint: {}", server_endpoint);
     // 2. create a task for X number of users each doing own thing
     let client = Arc::new(RwLock::new(
