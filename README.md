@@ -128,17 +128,14 @@ https://www.cncf.io/projects/
 
 https://github.com/tikv/tikv
 
-
 ## Things to check for stability(FCAPS)
 
 1. Fault management
 
 ## Things to remember for production
 
-
 1. check k8s and istio version compatibility
 2. install istio on aks
-
 
 ###  all the versioning issues(set versions for all stacks)
 
@@ -148,7 +145,6 @@ https://github.com/tikv/tikv
 4. k8s - don't use 1.19 version. stay with 1.16.1 as it's the minimum for istio
 5. fluentd
 6. istio
-
 
 ### Istio setup useful commands
 
